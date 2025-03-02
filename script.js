@@ -2,42 +2,84 @@ document.addEventListener("DOMContentLoaded", function () {
     // Handle height input toggle based on selection (cm or ft/in)
     document.querySelectorAll('input[name="height_unit"]').forEach((radio) => {
         radio.addEventListener("change", function () {
-            document.getElementById("height_cm_input").style.display = this.value === "cm" ? "block" : "none";
-            document.getElementById("height_ft_in_input").style.display = this.value === "ft" ? "block" : "none";
+            // Show cm input when "cm" is selected, hide ft/in input
+            if (this.value === "cm") {
+                document.getElementById("height_cm_input").style.display = "block";
+                document.getElementById("height_ft_in_input").style.display = "none";
+            } 
+            // Show ft/in inputs when "ft" is selected, hide cm input
+            else if (this.value === "ft") {
+                document.getElementById("height_cm_input").style.display = "none";
+                document.getElementById("height_ft_in_input").style.display = "block";
+            }
         });
     });
 
-    // Disable toggling before calculation
+    // Ensure radio button selection works properly
+    document.querySelectorAll('.selection-box .option input').forEach(radio => {
+        radio.addEventListener('change', function () {
+            let parentBox = this.closest('.selection-box');
+            parentBox.querySelectorAll('.option').forEach(label => {
+                label.classList.remove('selected');
+            });
+            this.parentElement.classList.add('selected');
+        });
+    });
+
     let toggleEnabled = false;
 
-    function toggleResult(index) {
-        if (!toggleEnabled) return; // Prevent toggle before calculation
+function toggleResult(index) {
+    if (!toggleEnabled) return; // Prevent toggling before calculation
 
-        const headings = [
-            ["Mild Weight Loss", "Mild Weight Gain"],
-            ["Weight Loss", "Weight Gain"],
-            ["Extreme Weight Loss", "Fast Weight Gain"]
-        ];
-        const values = [
-            ["mild-weight-loss", "mild-weight-gain"],
-            ["weight-loss", "weight-gain"],
-            ["extreme-weight-loss", "fast-weight-gain"]
-        ];
+    const headings = [
+        ["Mild Weight Loss", "Mild Weight Gain"],
+        ["Weight Loss", "Weight Gain"],
+        ["Extreme Weight Loss", "Fast Weight Gain"]
+    ];
 
-        const headingElement = document.getElementById(`toggle-heading-${index}`);
-        const valueElement = document.getElementById(`toggle-value-${index}`);
+    const values = [
+        ["mild-weight-loss", "mild-weight-gain"],
+        ["weight-loss", "weight-gain"],
+        ["extreme-weight-loss", "fast-weight-gain"]
+    ];
 
-        // Check current state and toggle to the other
-        const isLoss = headingElement.textContent === headings[index - 1][0];
-        headingElement.textContent = isLoss ? headings[index - 1][1] : headings[index - 1][0];
-        
-        const lossValue = document.getElementById(values[index - 1][0]).textContent;
-        const gainValue = document.getElementById(values[index - 1][1]).textContent;
+    const kgPerWeek = [
+        ["0.25 kg/week", "0.25 kg/week"],
+        ["0.5 kg/week", "0.5 kg/week"],
+        ["1 kg/week", "1 kg/week"]
+    ];
 
-        valueElement.textContent = isLoss ? gainValue : lossValue;
+    // Get elements
+    const headingElement = document.getElementById(`toggle-heading-${index}`);
+    const lossElement = document.getElementById(values[index - 1][0]);
+    const gainElement = document.getElementById(values[index - 1][1]);
+    const kgWeekElement = document.getElementById(`kg-week-${index}`);
+
+    if (!headingElement || !lossElement || !gainElement || !kgWeekElement) {
+        console.error(`Toggle elements not found for index: ${index}`);
+        return;
     }
 
-    window.toggleResult = toggleResult;
+    // Check if currently showing weight loss values
+    const isLoss = lossElement.style.display !== "none";
+
+    // Swap visibility of loss/gain values
+    lossElement.style.display = isLoss ? "none" : "block";
+    gainElement.style.display = isLoss ? "block" : "none";
+
+    // Toggle heading text
+    headingElement.textContent = isLoss ? headings[index - 1][1] : headings[index - 1][0];
+
+    // Toggle kg per week text
+    kgWeekElement.textContent = isLoss ? kgPerWeek[index - 1][1] : kgPerWeek[index - 1][0];
+}
+
+// Ensure function is globally available
+window.toggleResult = toggleResult;
+
+    
+
+    
 
     // Handle form submission
     document.getElementById("calorie-form").addEventListener("submit", function (e) {
@@ -83,33 +125,40 @@ document.addEventListener("DOMContentLoaded", function () {
             activity_level: activity_level
         };
 
-        fetch("http://127.0.0.1:5000/calculate", {
+        fetch("http://127.0.0.1:5501/calculate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
         })
-        .then((response) => response.json())
-        .then((result) => {
+        .then(response => response.json())
+        .then(result => {
+            console.log("Backend Response:", result);  // Debugging
+            
             if (result.error) {
                 alert("Error: " + result.error);
             } else {
-                document.getElementById("maintain-weight").textContent = `${result.calories_needed} Calories/day`;
-                document.getElementById("mild-weight-loss").textContent = `${Math.round(result.calories_needed * 0.9)} Calories/day`;
-                document.getElementById("weight-loss").textContent = `${Math.round(result.calories_needed * 0.8)} Calories/day`;
-                document.getElementById("extreme-weight-loss").textContent = `${Math.round(result.calories_needed * 0.6)} Calories/day`;
-                document.getElementById("mild-weight-gain").textContent = `${Math.round(result.calories_needed * 1.1)} Calories/day`;
-                document.getElementById("weight-gain").textContent = `${Math.round(result.calories_needed * 1.21)} Calories/day`;
-                document.getElementById("fast-weight-gain").textContent = `${Math.round(result.calories_needed * 1.41)} Calories/day`;
-
-                // Show the calorie values after clicking Calculate
+                function updateText(id, value) {
+                    let element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = `${value} Calories/day`;
+                    } else {
+                        console.error(`Element with ID "${id}" not found!`);
+                    }
+                }
+        
+                // ✅ Matching IDs from index.html
+                updateText("maintain-weight", result.calories_needed);
+                updateText("mild-weight-loss", result.mild_weight_loss);
+                updateText("weight-loss", result.weight_loss);
+                updateText("extreme-weight-loss", result.extreme_weight_loss);
+        
+                // ✅ Make calorie values visible
                 document.querySelectorAll(".result-item p").forEach(p => {
                     p.style.display = "block";
                 });
-
-                // Enable toggling after calculation
-                toggleEnabled = true;
             }
         })
-        .catch((error) => console.error("Fetch error:", error));
+        .catch(error => console.error("Fetch error:", error));
+        
     });
 });
