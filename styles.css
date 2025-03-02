@@ -1,35 +1,178 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
-  margin: 0;
-  padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(90deg, #e2e2e2, #e2e2e2);
 }
 
 .container {
-  max-width: 600px;
-  margin: 50px auto;
-  background-color: #fff;
-  padding: 20px;
+    display: flex;
+    width: 900px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+}
+
+.left-box {
+    width: 50%;
+    padding: 40px;
+}
+
+/* Make result headings the same size as 'Calorie Calculator' */
+h1, h2 {
+  font-size: 28px; /* Adjust as needed for consistency */
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Align result boxes with input fields */
+.right-box {
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align with input fields */
+}
+
+/* Style the result boxes for better alignment */
+.result-item {
+  width: 100%;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: left;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-  text-align: center;
+/* Initially hide the calorie values */
+.result-item p {
+  display: none;
 }
 
-form {
+
+.selection-box {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  margin: 15px 0;
 }
 
-label, input, select, button {
-  margin-bottom: 10px;
-}
-
-button {
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
+.option {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  background: #f0f0f0;
+  border-radius: 8px;
   cursor: pointer;
+  transition: 0.3s;
+  margin: 0 5px;
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent;
+}
+
+.option:hover {
+  background: #ddd;
+}
+
+.option input {
+  display: none;
+}
+
+.option-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.option.selected {
+  background: #000;
+  color: #fff;
+  border: 2px solid #000;
+  transform: scale(1.05);
+}
+
+
+.input-box {
+    position: relative;
+    margin: 15px 0;
+}
+
+.input-box input, .input-box select {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #eee;
+}
+
+
+/* Change the highlight color of dropdown options 
+.input-box select:focus {
+  background-color: black;
+  color: white;
+}*/
+
+
+
+.input-box i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background: black;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #333;
+}
+
+.result-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.toggle-box {
+  position: relative;
+}
+
+.toggle-icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 24px;
+  transition: 0.3s;
+}
+
+.toggle-icon:hover {
+  color: #000;
+  transform: scale(1.2);
 }
