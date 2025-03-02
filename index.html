@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Calculator</title>
+    <script>
+        function calculateCalories() {
+            const age = document.getElementById('age').value;
+            const gender = document.querySelector('input[name="gender"]:checked')?.value;
+            const weight_kg = document.getElementById('weight_kg').value;
+            const activity_level = document.getElementById('activity_level').value;
+
+            if (!age || !gender || !weight_kg || !activity_level) {
+                alert("Please fill all required fields!");
+                return;
+            }
+
+            let height_cm = null;
+            const height_unit = document.querySelector('input[name="height_unit"]:checked')?.value;
+
+            if (!height_unit) {
+                alert("Please select a height unit!");
+                return;
+            }
+
+            if (height_unit === 'cm') {
+                height_cm = document.getElementById('height_cm').value;
+                if (!height_cm) {
+                    alert("Please enter your height in cm!");
+                    return;
+                }
+            } else {
+                const height_ft = document.getElementById('height_ft').value;
+                const height_in = document.getElementById('height_in').value;
+                if (!height_ft || !height_in) {
+                    alert("Please enter your height in feet and inches!");
+                    return;
+                }
+                height_cm = (height_ft * 30.48) + (height_in * 2.54);
+            }
+
+            const data = {
+                age: Number(age),
+                gender: gender.toLowerCase(),
+                weight_kg: Number(weight_kg),
+                activity_level: activity_level,
+                height_cm: Number(height_cm)
+            };
+
+            fetch('http://127.0.0.1:5000/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log("Response from server:", result);
+                if (result.error) {
+                    alert("Error: " + result.error);
+                } else {
+                    document.getElementById('result').textContent = `Calories needed: ${result.calories_needed}`;
+                }
+            })
+            .catch(error => console.error('Fetch error:', error));
+        }
+
+        function toggleHeightInput() {
+            const unit = document.querySelector('input[name="height_unit"]:checked').value;
+            document.getElementById('height_cm_input').style.display = (unit === 'cm') ? 'block' : 'none';
+            document.getElementById('height_ft_in_input').style.display = (unit === 'ft_in') ? 'block' : 'none';
+        }
+    </script>
+</head>
+<body>
+    <h1>Calorie Calculator</h1>
+    <form onsubmit="event.preventDefault(); calculateCalories();">
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required><br>
+
+        <label>Gender:</label>
+        <input type="radio" id="male" name="gender" value="male" required>
+        <label for="male">Male</label>
+        <input type="radio" id="female" name="gender" value="female" required>
+        <label for="female">Female</label><br>
+
+        <label for="weight_kg">Weight (kg):</label>
+        <input type="number" id="weight_kg" name="weight_kg" required><br>
+
+        <label>Height:</label>
+        <input type="radio" id="height_cm_radio" name="height_unit" value="cm" onclick="toggleHeightInput()" required>
+        <label for="height_cm_radio">cm</label>
+        <input type="radio" id="height_ft_in_radio" name="height_unit" value="ft_in" onclick="toggleHeightInput()" required>
+        <label for="height_ft_in_radio">ft/in</label><br>
+
+        <div id="height_cm_input" style="display: none;">
+            <label for="height_cm">Height (cm):</label>
+            <input type="number" id="height_cm" name="height_cm"><br>
+        </div>
+
+        <div id="height_ft_in_input" style="display: none;">
+            <label for="height_ft">Height (ft):</label>
+            <input type="number" id="height_ft" name="height_ft">
+            <label for="height_in">Height (in):</label>
+            <input type="number" id="height_in" name="height_in"><br>
+        </div>
+
+        <label for="activity_level">Activity Level:</label>
+        <select id="activity_level" name="activity_level" required>
+            <option value="BMR">BMR</option>
+            <option value="Little or no exercise">Little or no exercise</option>
+            <option value="Exercise 1-3 times/week">Exercise 1-3 times/week</option>
+            <option value="Exercise 4-5 times/week">Exercise 4-5 times/week</option>
+            <option value="Daily exercise or intense exercise 3-4 times/week">Daily exercise or intense exercise 3-4 times/week</option>
+            <option value="Intense exercise 6-7 times/week">Intense exercise 6-7 times/week</option>
+            <option value="Very intense exercise daily, or physical job">Very intense exercise daily, or physical job</option>
+        </select><br>
+
+        <button type="submit">Calculate</button>
+    </form>
+    <p id="result"></p>
+</body>
+</html>
