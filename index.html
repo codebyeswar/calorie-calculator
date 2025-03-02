@@ -78,34 +78,58 @@
 
         <div class="right-box">
             <h2>Results</h2>
-            
-            <!-- Toggle Result Boxes -->
+        
+            <!-- Maintain Weight -->
             <div class="result-item">
                 <h3>Maintain Weight</h3>
                 <p id="maintain-weight">-- Calories/day</p>
             </div>
-
-            <div class="result-item toggle-box">
+        
+            <!-- Weight Loss Section (Visible by Default) -->
+            <div class="result-item toggle-box" id="loss-section-1">
                 <h3 id="toggle-heading-1">Mild Weight Loss</h3>
-                <p id="toggle-value-1">-- Calories/day</p>
+                <p id="mild-weight-loss">-- Calories/day</p>
                 <p>0.25 kg/week</p>
                 <i class="bx bx-sync toggle-icon" onclick="toggleResult(1)"></i>
             </div>
-
-            <div class="result-item toggle-box">
+        
+            <div class="result-item toggle-box" id="loss-section-2">
                 <h3 id="toggle-heading-2">Weight Loss</h3>
-                <p id="toggle-value-2">-- Calories/day</p>
+                <p id="weight-loss">-- Calories/day</p>
                 <p>0.5 kg/week</p>
                 <i class="bx bx-sync toggle-icon" onclick="toggleResult(2)"></i>
             </div>
-
-            <div class="result-item toggle-box">
+        
+            <div class="result-item toggle-box" id="loss-section-3">
                 <h3 id="toggle-heading-3">Extreme Weight Loss</h3>
-                <p id="toggle-value-3">-- Calories/day</p>
+                <p id="extreme-weight-loss">-- Calories/day</p>
+                <p>1 kg/week</p>
+                <i class="bx bx-sync toggle-icon" onclick="toggleResult(3)"></i>
+            </div>
+        
+            <!-- Weight Gain Section (Hidden Initially) -->
+            <div class="result-item toggle-box" id="gain-section-1" style="display: none;">
+                <h3 id="toggle-heading-gain-1">Mild Weight Gain</h3>
+                <p id="mild-weight-gain">-- Calories/day</p>
+                <p>0.25 kg/week</p>
+                <i class="bx bx-sync toggle-icon" onclick="toggleResult(1)"></i>
+            </div>
+        
+            <div class="result-item toggle-box" id="gain-section-2" style="display: none;">
+                <h3 id="toggle-heading-gain-2">Weight Gain</h3>
+                <p id="weight-gain">-- Calories/day</p>
+                <p>0.5 kg/week</p>
+                <i class="bx bx-sync toggle-icon" onclick="toggleResult(2)"></i>
+            </div>
+        
+            <div class="result-item toggle-box" id="gain-section-3" style="display: none;">
+                <h3 id="toggle-heading-gain-3">Fast Weight Gain</h3>
+                <p id="fast-weight-gain">-- Calories/day</p>
                 <p>1 kg/week</p>
                 <i class="bx bx-sync toggle-icon" onclick="toggleResult(3)"></i>
             </div>
         </div>
+        
     </div>
 
     <script src="script.js"></script>
